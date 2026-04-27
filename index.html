@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Bitmasking Mastery | C++ Subset Explorer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #eef2f7 0%, #d4dfe9 100%);
+            font-family: 'Segoe UI', 'Inter', 'Fira Code', monospace;
+            padding: 1.5rem;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: rgba(255,255,240,0.3);
+            border-radius: 2rem;
+            backdrop-filter: blur(1px);
+            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+
+        .topic-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            padding: 1rem 1.5rem;
+            background: #1e2a32;
+            border-bottom: 3px solid #ffb347;
+        }
+
+        .topic-btn {
+            background: #2c3e50;
+            border: none;
+            padding: 0.7rem 1.4rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 60px;
+            color: #f0f3f8;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .topic-btn:hover {
+            background: #ffb347;
+            color: #1e2a36;
+            transform: translateY(-2px);
+        }
+
+        .topic-btn.active {
+            background: #f39c12;
+            color: #1e2a2f;
+            box-shadow: 0 0 0 2px #f9e79f;
+        }
+
+        .two-col-layout {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .left-panel, .right-panel {
+            flex: 1 1 45%;
+            margin: 1.2rem;
+            background: #fffffffa;
+            border-radius: 1.5rem;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            font-size: 1.35rem;
+            font-weight: 700;
+            padding: 1rem 1.3rem;
+            background: #fef7e0;
+            border-bottom: 2px solid #ffd966;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .content-scroll {
+            padding: 1.5rem;
+            overflow-y: auto;
+            max-height: 70vh;
+            line-height: 1.6;
+            font-size: 1.05rem;
+        }
+
+        /* LEFT COLUMN - DARK BG STEP LIST (shared) */
+        .step-list-container {
+            background: #0a0e1a;
+            border-radius: 1.2rem;
+            padding: 0.5rem 0.2rem;
+        }
+
+        .step-item {
+            background: #111827;
+            border-radius: 14px;
+            margin-bottom: 0.9rem;
+            border: 1px solid #2d3748;
+            transition: all 0.15s;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            padding: 0.9rem 1.1rem;
+            background: #0f172a;
+            font-family: 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 1rem;
+            font-weight: 500;
+            border-left: 5px solid #3b82f6;
+            transition: 0.1s;
+        }
+
+        .step-number {
+            background: #1e3a5f;
+            color: white;
+            border-radius: 40px;
+            min-width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            font-family: monospace;
+            flex-shrink: 0;
+        }
+
+        .step-code {
+            color: #e2e8f0;
+            font-family: 'Fira Code', 'Cascadia Code', monospace;
+            word-break: break-word;
+            flex: 1;
+            font-size: 0.98rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .step-item:hover {
+            background: #1e293b;
+            transform: translateX(4px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .step-item.active-step {
+            background: #1e2a3a;
+            border-left: 3px solid #f39c12;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .step-item.active-step .step-header {
+            background: #0f212e;
+            border-left-color: #f1c40f;
+        }
+
+        /* RIGHT COLUMN explanation styles */
+        .exp-card {
+            background: #fefcf5;
+            border-radius: 1.2rem;
+            padding: 1.3rem 1.5rem;
+            border-left: 8px solid #2c7da0;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            font-size: 1.05rem;
+        }
+
+        .exp-step-badge {
+            display: inline-block;
+            background: #1e466e;
+            color: white;
+            border-radius: 40px;
+            padding: 0.25rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .exp-detail {
+            font-size: 1.05rem;
+            line-height: 1.65;
+            color: #1e293b;
+        }
+
+        .exp-detail code {
+            background: #eef2fa;
+            padding: 0.2rem 0.45rem;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.98rem;
+            color: #c7254e;
+        }
+
+        .small-note {
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            text-align: center;
+            color: #94a3b8;
+            background: #1e293b;
+            padding: 0.6rem;
+            border-radius: 1rem;
+        }
+
+        @media (max-width: 780px) {
+            .two-col-layout {
+                flex-direction: column;
+            }
+            body {
+                padding: 0.8rem;
+            }
+            .content-scroll {
+                font-size: 0.98rem;
+            }
+            .exp-detail {
+                font-size: 0.98rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="topic-bar">
+        <button class="topic-btn" data-section="section1">1. Subsets</button>
+        <button class="topic-btn" data-section="section2">2. Subsets using Bitmasking (Original)</button>
+        <button class="topic-btn" data-section="section3">3. Subsets using Bitmasking (Binary + indices)</button>
+        <button class="topic-btn" data-section="section4">4. Rectangular Geometry</button>
+    </div>
+    <div class="two-col-layout" id="mainLayout">
+        <!-- LEFT COLUMN -->
+        <div class="left-panel">
+            <div class="panel-header">
+                📘 <span id="leftTitle">C++ Subset Generator</span>
+            </div>
+            <div id="leftContent" class="content-scroll">
+                <!-- dynamic step list -->
+            </div>
+        </div>
+        <!-- RIGHT COLUMN -->
+        <div class="right-panel">
+            <div class="panel-header">
+                📖 <span id="rightTitle">Step-by-Step Explanation</span>
+            </div>
+            <div id="rightContent" class="content-scroll">
+                <!-- dynamic explanation -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ======================= SECTION 2: Original program (array {1,3,5,6,7}) with stepwise explanations =======================
+    const section2Steps = [
+        { stepNumber: 1, program: "#include <iostream>", explanation: "This line includes the input-output library in C++. It allows the program to use <code>cout</code> for printing output on the screen. Without this line, the program cannot print anything." },
+        { stepNumber: 2, program: "using namespace std;", explanation: "This line tells the compiler to use the standard namespace. It allows us to write <code>cout</code> instead of <code>std::cout</code>. It simply makes the code shorter and easier to read." },
+        { stepNumber: 3, program: "int main() {", explanation: "This is the starting point of every C++ program. Execution begins from here. Everything inside the curly braces <code>{}</code> is the main logic of the program." },
+        { stepNumber: 4, program: "    int arr[] = {1, 3, 5, 6, 7};", explanation: "This creates an array named <code>arr</code> containing 5 elements. These are the elements from which subsets will be generated. Index mapping is:<br><code>arr[0] = 1</code><br><code>arr[1] = 3</code><br><code>arr[2] = 5</code><br><code>arr[3] = 6</code><br><code>arr[4] = 7</code>" },
+        { stepNumber: 5, program: "    int n = 5;", explanation: "This stores the number of elements in the array. Here <code>n = 5</code>, meaning the array has 5 elements. This value is used in loops and bit calculations." },
+        { stepNumber: 6, program: "    // loop from 0 to (2^n - 1)", explanation: "This comment explains the range of the outer loop. Since total subsets = 2ⁿ, we iterate mask from 0 to 2ⁿ-1 (0 to 31 when n=5)." },
+        { stepNumber: 7, program: "    for (int mask = 0; mask < (1 << n); mask++) {", explanation: "This is the main loop that generates all subsets.<br><strong>mask</strong> is a number that represents a subset in binary form.<br><code>(1 << n)</code> means shifting 1 left by n places, which equals <strong>2ⁿ</strong>.<br>So here: 2⁵ = 32<br>That means mask goes from 0 to 31.<br>Each value of mask represents one subset in binary form:<br>0 → 00000<br>1 → 00001<br>2 → 00010<br>…<br>31 → 11111" },
+        { stepNumber: 8, program: "        cout << \"{ \";", explanation: "This prints an opening curly bracket followed by a space. It marks the start of one subset. Every subset will begin with <code>{ </code>." },
+        { stepNumber: 9, program: "        // check each bit", explanation: "This comment indicates that the inner loop will examine every bit position of the current mask to decide which elements belong to the subset." },
+        { stepNumber: 10, program: "        for (int i = 0; i < n; i++) {", explanation: "This loop checks every element in the array from index 0 to 4. It is used to decide whether each element should be included in the current subset or not." },
+        { stepNumber: 11, program: "            if (mask & (1 << i)) {", explanation: "This is the most important line in bitmasking.<br><code>(1 << i)</code> creates a number where only the i-th bit is 1.<br>Examples:<br>i = 0 → 00001<br>i = 1 → 00010<br>i = 2 → 00100<br>i = 3 → 01000<br>i = 4 → 10000<br><code>mask & (1 << i)</code> checks if that bit is ON in mask.<br>If result is not zero → the element is selected.<br>If result is zero → element not selected." },
+        { stepNumber: 12, program: "                cout << arr[i] << \" \";", explanation: "If the condition is true, this line prints the actual element from the array followed by a space. It adds that element to the current subset being printed." },
+        { stepNumber: 13, program: "            }", explanation: "This closes the <code>if</code> condition block. It ends the decision for the current element index i." },
+        { stepNumber: 14, program: "        }", explanation: "This closes the inner <code>for</code> loop. Means that all array indices (0 to n-1) have been checked for the current mask." },
+        { stepNumber: 15, program: "        cout << \"}\" << endl;", explanation: "This prints the closing curly bracket for the subset and moves the cursor to the next line (newline). So one complete subset is printed.<br>Example output format:<br><code>{ 1 5 7 }</code>" },
+        { stepNumber: 16, program: "    }", explanation: "This closes the outer loop block. It means one full iteration of mask is complete, and the loop moves to the next mask value." },
+        { stepNumber: 17, program: "    return 0;", explanation: "This tells the operating system that the program finished successfully. It is the normal end of a C++ program, returning 0 to indicate success." },
+        { stepNumber: 18, program: "}", explanation: "This closes the <code>main()</code> function. After this line, program execution ends completely." }
+    ];
+
+    // ======================= SECTION 3: Binary + Subsets program (with 39 steps) =======================
+    const section3Steps = [
+        { stepNumber: 1, program: "#include <iostream>", explanation: "This includes the input-output library in C++. It allows the program to use <code>cin</code> and <code>cout</code> for input and output operations." },
+        { stepNumber: 2, program: "using namespace std;", explanation: "This allows us to use standard library functions like <code>cout</code> and <code>cin</code> without writing <code>std::</code> before them." },
+        { stepNumber: 3, program: "void printBinary(int num) {", explanation: "This is a function that converts a decimal number into binary and prints it. It takes one input parameter called <code>num</code>." },
+        { stepNumber: 4, program: "    cout << \"Binary: \";", explanation: "This prints the word \"Binary:\" on the screen before showing the binary representation of the number." },
+        { stepNumber: 5, program: "    if (num == 0) {", explanation: "This checks if the number is zero. If the input is 0, its binary is also 0." },
+        { stepNumber: 6, program: "        cout << \"0\";", explanation: "If the number is 0, the program prints 0 and stops the function immediately." },
+        { stepNumber: 7, program: "        return;", explanation: "This exits the function early when the number is 0, avoiding unnecessary processing." },
+        { stepNumber: 8, program: "    }", explanation: "This closes the if-block for the zero-check condition." },
+        { stepNumber: 9, program: "    int binary[32];", explanation: "An array is created to store binary digits (up to 32 bits, enough for any integer)." },
+        { stepNumber: 10, program: "    int i = 0;", explanation: "<code>i</code> is used as an index to store each remainder (binary digit) in the array." },
+        { stepNumber: 11, program: "    while (num > 0) {", explanation: "This loop runs until the number becomes 0. It is used to extract binary digits one by one." },
+        { stepNumber: 12, program: "        binary[i] = num % 2;", explanation: "This gets the remainder when the number is divided by 2. That remainder is either 0 or 1, which is a binary digit." },
+        { stepNumber: 13, program: "        num = num / 2;", explanation: "This reduces the number by dividing it by 2, moving toward converting it into binary step by step." },
+        { stepNumber: 14, program: "        i++;", explanation: "This increases the index so the next binary digit is stored in the next position of the array." },
+        { stepNumber: 15, program: "    }", explanation: "This closes the while loop after all binary digits have been extracted." },
+        { stepNumber: 16, program: "    for (int j = i - 1; j >= 0; j--) {", explanation: "This loop prints the binary digits in reverse order because they were stored backwards (LSB first)." },
+        { stepNumber: 17, program: "        cout << binary[j];", explanation: "This prints each binary digit one by one in correct order (MSB to LSB)." },
+        { stepNumber: 18, program: "    }", explanation: "This closes the reverse-printing loop." },
+        { stepNumber: 19, program: "}", explanation: "This closes the <code>printBinary</code> function." },
+        { stepNumber: 20, program: "void generateSubsets(int n) {", explanation: "This function generates all subsets using bitmasking for numbers from 0 to n-1 (the indices)." },
+        { stepNumber: 21, program: "    cout << \"\\nSubsets:\\n\";", explanation: "This prints a newline and a header \"Subsets:\" before listing all subsets." },
+        { stepNumber: 22, program: "    for (int mask = 0; mask < (1 << n); mask++) {", explanation: "This loop runs from 0 to 2ⁿ − 1. Each value of <code>mask</code> represents one unique subset in binary form." },
+        { stepNumber: 23, program: "        cout << \"{ \";", explanation: "This prints the opening curly bracket and a space for each subset." },
+        { stepNumber: 24, program: "        for (int i = 0; i < n; i++) {", explanation: "This inner loop checks each bit position from 0 to n-1 to decide if index i should be included." },
+        { stepNumber: 25, program: "            if (mask & (1 << i)) {", explanation: "This checks whether the i-th bit of <code>mask</code> is ON (1). If ON, the element (index i) is included in the subset." },
+        { stepNumber: 26, program: "                cout << i << \" \";", explanation: "This prints the index of the element if it is selected in the current subset." },
+        { stepNumber: 27, program: "            }", explanation: "This closes the if-condition block." },
+        { stepNumber: 28, program: "        }", explanation: "This closes the inner for-loop that checks all bit positions." },
+        { stepNumber: 29, program: "        cout << \"}\" << endl;", explanation: "This closes the subset with <code>}</code> and moves to the next line (newline)." },
+        { stepNumber: 30, program: "    }", explanation: "This closes the outer for-loop over all masks." },
+        { stepNumber: 31, program: "}", explanation: "This closes the <code>generateSubsets</code> function." },
+        { stepNumber: 32, program: "int main() {", explanation: "This is the starting point of the program where execution begins." },
+        { stepNumber: 33, program: "    int num;", explanation: "This variable stores the number entered by the user." },
+        { stepNumber: 34, program: "    cout << \"Enter a number: \";", explanation: "This prompts the user to enter a number." },
+        { stepNumber: 35, program: "    cin >> num;", explanation: "This takes input from the user and stores it in variable <code>num</code>." },
+        { stepNumber: 36, program: "    printBinary(num);", explanation: "This calls the function that converts and prints the binary form of the number." },
+        { stepNumber: 37, program: "    generateSubsets(num);", explanation: "This calls the function that generates all subsets using bitmasking (based on the input number)." },
+        { stepNumber: 38, program: "    return 0;", explanation: "This ends the program successfully, returning 0 to the operating system." },
+        { stepNumber: 39, program: "}", explanation: "This closes the main function and ends execution." }
+    ];
+
+    // Helper: escape HTML
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // Generic function to build left panel for any section with steps array
+    function buildStepList(container, stepsArray, onClickCallback) {
+        container.innerHTML = '';
+        const stepsWrapper = document.createElement('div');
+        stepsWrapper.className = 'step-list-container';
+        
+        stepsArray.forEach(step => {
+            const stepDiv = document.createElement('div');
+            stepDiv.className = 'step-item';
+            stepDiv.setAttribute('data-step-id', step.stepNumber);
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'step-header';
+            headerDiv.innerHTML = `
+                <span class="step-number">${step.stepNumber}</span>
+                <span class="step-code"><code style="background:transparent; font-family: 'Fira Code', monospace;">${escapeHtml(step.program)}</code></span>
+            `;
+            stepDiv.appendChild(headerDiv);
+            stepDiv.addEventListener('click', () => {
+                document.querySelectorAll('#leftContent .step-item').forEach(el => el.classList.remove('active-step'));
+                stepDiv.classList.add('active-step');
+                onClickCallback(step.stepNumber);
+            });
+            stepsWrapper.appendChild(stepDiv);
+        });
+        container.appendChild(stepsWrapper);
+        
+        const note = document.createElement('div');
+        note.className = 'small-note';
+        note.innerHTML = '💡 Click any line of code → detailed explanation appears on the right.';
+        container.appendChild(note);
+    }
+
+    // SECTION 2 specific handlers
+    const section2Map = new Map();
+    section2Steps.forEach(step => { section2Map.set(step.stepNumber, step.explanation); });
+    function showSection2Explanation(stepNumber) {
+        const explanation = section2Map.get(stepNumber);
+        const programLine = section2Steps.find(s => s.stepNumber === stepNumber)?.program || '';
+        const rightContainer = document.getElementById('rightContent');
+        rightContainer.innerHTML = `
+            <div class="exp-card">
+                <div class="exp-step-badge">Step ${stepNumber}</div>
+                <div class="exp-detail">
+                    <p><strong style="font-family:monospace; background:#eef2fa; padding:0.2rem 0.5rem; border-radius:8px; display:inline-block;">📌 ${escapeHtml(programLine)}</strong></p>
+                    <div style="margin-top: 1rem;">${explanation}</div>
+                </div>
+            </div>
+        `;
+        document.getElementById('rightTitle').innerHTML = `📖 Explanation (Step ${stepNumber})`;
+    }
+    function setSection2Default() { showSection2Explanation(1); }
+
+    // SECTION 3 specific handlers
+    const section3Map = new Map();
+    section3Steps.forEach(step => { section3Map.set(step.stepNumber, step.explanation); });
+    function showSection3Explanation(stepNumber) {
+        const explanation = section3Map.get(stepNumber);
+        const programLine = section3Steps.find(s => s.stepNumber === stepNumber)?.program || '';
+        const rightContainer = document.getElementById('rightContent');
+        rightContainer.innerHTML = `
+            <div class="exp-card">
+                <div class="exp-step-badge">Step ${stepNumber}</div>
+                <div class="exp-detail">
+                    <p><strong style="font-family:monospace; background:#eef2fa; padding:0.2rem 0.5rem; border-radius:8px; display:inline-block;">📌 ${escapeHtml(programLine)}</strong></p>
+                    <div style="margin-top: 1rem;">${explanation}</div>
+                </div>
+            </div>
+        `;
+        document.getElementById('rightTitle').innerHTML = `📖 Explanation (Step ${stepNumber})`;
+    }
+    function setSection3Default() { showSection3Explanation(1); }
+
+    // ======================= SECTION 1 (Subsets theory) =======================
+    function buildSection1Left(container) {
+        container.innerHTML = `
+            <div style="background:#fdf8e7; padding:1.2rem; border-radius:1.2rem; margin-bottom:1.5rem; font-size:1rem;">
+                <h3>✅ What is a Subset?</h3>
+                <p><strong>Subset means:</strong> pick any elements from the list — you can pick none, some, or all.</p>
+                <p>Example sequence: <code>{1, 3, 5, 6, 7}</code></p>
+                <p><strong>Valid subsets:</strong><br>
+                <code>{ }</code> ← empty<br><code>{1}</code><br><code>{3, 5}</code><br><code>{1, 3, 5, 6, 7}</code>
+                </p>
+                <p><strong>Invalid:</strong> <code>{1,4}</code> ❌ (4 not in original)</p>
+                <h3>🧠 Idea of Bitmasking</h3>
+                <p>5 bits → 1 include, 0 skip.<br>Index: 0→1,1→3,2→5,3→6,4→7.<br>Binary number from 00000 to 11111 → 32 subsets.</p>
+            </div>
+        `;
+    }
+    function buildSection1Right(container) {
+        container.innerHTML = `
+            <div class="exp-card"><h4>🔍 Example 1: 10101 → {1,5,7}</h4><p>bits: 1→take 1, 0→skip 3, 1→take 5, 0→skip 6, 1→take 7</p></div>
+            <div class="exp-card"><h4>🔍 Example 2: 01110 → {3,5,6}</h4><p>bits: 0→skip1,1→take3,1→take5,1→take6,0→skip7</p></div>
+            <button id="genIframeBtn" style="background:#2c7da0; padding:0.6rem 1.2rem; border:none; border-radius:40px; color:white; font-weight:bold; cursor:pointer; font-size:1rem;">🌐 Create subsets (Live tool)</button>
+            <div id="iframeSubsetContainer" style="margin-top: 18px;"></div>
+        `;
+        setTimeout(() => {
+            const btn = document.getElementById('genIframeBtn');
+            if(btn) btn.onclick = () => {
+                const iframeDiv = document.getElementById('iframeSubsetContainer');
+                iframeDiv.innerHTML = `<iframe src="https://www.philippe-fournier-viger.com/tools/generate_all_subsets.php" width="100%" height="400" style="border:0; border-radius:12px;"></iframe>`;
+            };
+        }, 10);
+    }
+
+    // ======================= SECTION 4 Rectangular Geometry =======================
+    function buildSection4Left(container) {
+        container.innerHTML = `<div style="background:#eef5ff; padding:1.2rem; border-radius:1.2rem; font-size:1rem;">
+            <h3>🔲 Rectangular Subsets & Bitmask</h3>
+            <p>Bitmasking extends to 2D grids: row masks + column masks → subrectangles.</p>
+            <pre style="background:#0f111a; color:#ccc; font-size:0.95rem; padding:1rem; border-radius:1rem;">for (int rowMask = 0; rowMask < (1<<R); rowMask++)<br>  for (int colMask = 0; colMask < (1<<C); colMask++)<br>     // subrectangle from selected rows & columns</pre>
+            <p>Total non-empty subrectangles: (2^R - 1) * (2^C - 1).</p>
+        </div>`;
+    }
+    function buildSection4Right(container) {
+        container.innerHTML = `<div class="exp-card"><h4>📐 Geometry meets bitmask</h4><p>Use two independent bitmasks to choose subsets of rows and columns → their Cartesian product forms a sub-rectangle. This technique is used in matrix subset DP, counting submatrices with constraints, and efficient enumeration.</p><p>Similar to subset generation, each bit decides whether to include a row or column.</p></div>`;
+    }
+
+    // Router
+    function renderSection(sectionId) {
+        const leftContainer = document.getElementById('leftContent');
+        const rightContainer = document.getElementById('rightContent');
+        
+        if (sectionId === 'section1') {
+            document.getElementById('leftTitle').innerText = "📚 Subsets & Bitmask Core";
+            document.getElementById('rightTitle').innerText = "💡 Examples & Tool";
+            buildSection1Left(leftContainer);
+            buildSection1Right(rightContainer);
+        } 
+        else if (sectionId === 'section2') {
+            document.getElementById('leftTitle').innerText = "💻 Subset Generator (Original) - Stepwise";
+            document.getElementById('rightTitle').innerText = "📖 Step-by-Step Explanation";
+            buildStepList(leftContainer, section2Steps, showSection2Explanation);
+            if (!window._sec2Init) { setSection2Default(); window._sec2Init = true; }
+            else {
+                const activeStep = document.querySelector('#leftContent .step-item.active-step');
+                if (activeStep) showSection2Explanation(parseInt(activeStep.getAttribute('data-step-id')));
+                else setSection2Default();
+            }
+        }
+        else if (sectionId === 'section3') {
+            document.getElementById('leftTitle').innerText = "🧪 Binary + Subset by Indices (Step-by-Step)";
+            document.getElementById('rightTitle').innerText = "📖 Step-by-Step Explanation";
+            buildStepList(leftContainer, section3Steps, showSection3Explanation);
+            if (!window._sec3Init) { setSection3Default(); window._sec3Init = true; }
+            else {
+                const activeStep = document.querySelector('#leftContent .step-item.active-step');
+                if (activeStep) showSection3Explanation(parseInt(activeStep.getAttribute('data-step-id')));
+                else setSection3Default();
+            }
+        }
+        else if (sectionId === 'section4') {
+            document.getElementById('leftTitle').innerText = "📐 Rectangular Geometry";
+            document.getElementById('rightTitle').innerText = "🧩 Bitmask in 2D";
+            buildSection4Left(leftContainer);
+            buildSection4Right(rightContainer);
+        }
+    }
+
+    // Attach button events
+    document.querySelectorAll('.topic-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const section = btn.dataset.section;
+            document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderSection(section);
+        });
+    });
+
+    // Initial load: SECTION 2 (Original) as default per original request
+    renderSection('section2');
+    document.querySelector('.topic-btn[data-section="section2"]').classList.add('active');
+</script>
+</body>
+</html>
