@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Bitmasking Mastery | Subsets, Geometry & Backtracking</title>
+    <title>Bitmasking Mastery | Subsets, Geometry & Backtracking (Password Example)</title>
     <style>
         * {
             margin: 0;
@@ -223,16 +223,6 @@
             margin: 0.8rem 0;
         }
 
-        .visualization-area {
-            background: #f8fafc;
-            border-radius: 1.2rem;
-            margin-bottom: 1.2rem;
-            padding: 1rem;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
-        }
-
         .small-note {
             font-size: 0.85rem;
             margin-top: 1rem;
@@ -263,7 +253,7 @@
         <button class="topic-btn" data-section="section2">2. Subsets (Bitmasking Original)</button>
         <button class="topic-btn" data-section="section3">3. Binary + Subsets (Indices)</button>
         <button class="topic-btn" data-section="section4">4. Rectangular Geometry</button>
-        <button class="topic-btn" data-section="section5">5. Backtracking (Subsets)</button>
+        <button class="topic-btn" data-section="section5">5. Backtracking (Password)</button>
     </div>
     <div class="two-col-layout" id="mainLayout">
         <div class="left-panel">
@@ -282,185 +272,136 @@
 </div>
 
 <script>
-    // ======================= SECTION 1,2,3,4 (kept unchanged) =======================
+    // ======================= SECTION 1,2,3,4 (unchanged, kept minimal for consistency) =======================
     const section2Steps = [
-        { stepNumber: 1, program: "#include <iostream>", explanation: "Includes input-output library. Allows use of <code>cout</code>." },
-        { stepNumber: 2, program: "using namespace std;", explanation: "Allows writing <code>cout</code> without <code>std::</code>." },
-        { stepNumber: 3, program: "int main() {", explanation: "Program entry point." },
-        { stepNumber: 4, program: "    int arr[] = {1, 3, 5, 6, 7};", explanation: "Array of 5 elements." },
-        { stepNumber: 5, program: "    int n = 5;", explanation: "Number of elements." },
-        { stepNumber: 6, program: "    // loop from 0 to (2^n - 1)", explanation: "Comment explaining subset count." },
-        { stepNumber: 7, program: "    for (int mask = 0; mask < (1 << n); mask++) {", explanation: "Mask from 0 to 31, each represents a subset." },
-        { stepNumber: 8, program: "        cout << \"{ \";", explanation: "Start of subset print." },
-        { stepNumber: 9, program: "        // check each bit", explanation: "Inner loop checks each element." },
-        { stepNumber: 10, program: "        for (int i = 0; i < n; i++) {", explanation: "Iterate indices." },
-        { stepNumber: 11, program: "            if (mask & (1 << i)) {", explanation: "Check if i-th bit set." },
-        { stepNumber: 12, program: "                cout << arr[i] << \" \";", explanation: "Print element if selected." },
-        { stepNumber: 13, program: "            }", explanation: "Close if." },
-        { stepNumber: 14, program: "        }", explanation: "Close inner loop." },
-        { stepNumber: 15, program: "        cout << \"}\" << endl;", explanation: "Close subset and newline." },
-        { stepNumber: 16, program: "    }", explanation: "Close outer loop." },
-        { stepNumber: 17, program: "    return 0;", explanation: "Successful exit." },
-        { stepNumber: 18, program: "}", explanation: "End main." }
-    ];
-    const section3Steps = [
-        { stepNumber: 1, program: "#include <iostream>", explanation: "Standard I/O." },
-        { stepNumber: 2, program: "using namespace std;", explanation: "Std namespace." },
-        { stepNumber: 3, program: "void printBinary(int num) {", explanation: "Function to print binary." },
-        { stepNumber: 4, program: "    cout << \"Binary: \";", explanation: "Print label." },
-        { stepNumber: 5, program: "    if (num == 0) {", explanation: "Zero case." },
-        { stepNumber: 6, program: "        cout << \"0\";", explanation: "Print 0." },
-        { stepNumber: 7, program: "        return;", explanation: "Return early." },
-        { stepNumber: 8, program: "    }", explanation: "Close if." },
-        { stepNumber: 9, program: "    int binary[32];", explanation: "Array for bits." },
-        { stepNumber: 10, program: "    int i = 0;", explanation: "Index variable." },
-        { stepNumber: 11, program: "    while (num > 0) {", explanation: "Extract bits." },
-        { stepNumber: 12, program: "        binary[i] = num % 2;", explanation: "Store remainder." },
-        { stepNumber: 13, program: "        num = num / 2;", explanation: "Divide by 2." },
-        { stepNumber: 14, program: "        i++;", explanation: "Increment index." },
-        { stepNumber: 15, program: "    }", explanation: "End while." },
-        { stepNumber: 16, program: "    for (int j = i - 1; j >= 0; j--) {", explanation: "Print in reverse." },
-        { stepNumber: 17, program: "        cout << binary[j];", explanation: "Print bit." },
-        { stepNumber: 18, program: "    }", explanation: "End for." },
-        { stepNumber: 19, program: "}", explanation: "End function." },
-        { stepNumber: 20, program: "void generateSubsets(int n) {", explanation: "Generate subsets using bitmask." },
-        { stepNumber: 21, program: "    cout << \"\\nSubsets:\\n\";", explanation: "Header." },
-        { stepNumber: 22, program: "    for (int mask = 0; mask < (1 << n); mask++) {", explanation: "Mask loop." },
-        { stepNumber: 23, program: "        cout << \"{ \";", explanation: "Open brace." },
-        { stepNumber: 24, program: "        for (int i = 0; i < n; i++) {", explanation: "Inner loop." },
-        { stepNumber: 25, program: "            if (mask & (1 << i)) {", explanation: "Check bit." },
-        { stepNumber: 26, program: "                cout << i << \" \";", explanation: "Print index." },
-        { stepNumber: 27, program: "            }", explanation: "Close if." },
-        { stepNumber: 28, program: "        }", explanation: "Close inner." },
-        { stepNumber: 29, program: "        cout << \"}\" << endl;", explanation: "Close subset." },
-        { stepNumber: 30, program: "    }", explanation: "Close mask loop." },
-        { stepNumber: 31, program: "}", explanation: "End function." },
-        { stepNumber: 32, program: "int main() {", explanation: "Main start." },
-        { stepNumber: 33, program: "    int num;", explanation: "Variable." },
-        { stepNumber: 34, program: "    cout << \"Enter a number: \";", explanation: "Prompt." },
-        { stepNumber: 35, program: "    cin >> num;", explanation: "Input." },
-        { stepNumber: 36, program: "    printBinary(num);", explanation: "Call binary." },
-        { stepNumber: 37, program: "    generateSubsets(num);", explanation: "Call subsets." },
-        { stepNumber: 38, program: "    return 0;", explanation: "Exit." },
-        { stepNumber: 39, program: "}", explanation: "End main." }
-    ];
-    // Rectangle steps (unchanged, but we keep minimal for brevity - reused from earlier logic)
-    const rectangleSteps = [
-        { stepNumber: 1, program: "#include <iostream>", explanation: "I/O library." },
+        { stepNumber: 1, program: "#include <iostream>", explanation: "Includes input-output library." },
         { stepNumber: 2, program: "using namespace std;", explanation: "Std namespace." },
         { stepNumber: 3, program: "int main() {", explanation: "Main start." },
-        { stepNumber: 4, program: "    // Rectangle A", explanation: "Comment." },
-        { stepNumber: 5, program: "    int a_bl_x = 0, a_bl_y = 0;", explanation: "Bottom-left (0,0)." },
-        { stepNumber: 6, program: "    int a_tr_x = 4, a_tr_y = 4;", explanation: "Top-right (4,4)." },
-        { stepNumber: 7, program: "    // Rectangle B", explanation: "Comment." },
-        { stepNumber: 8, program: "    int b_bl_x = 2, b_bl_y = 2;", explanation: "Bottom-left (2,2)." },
-        { stepNumber: 9, program: "    int b_tr_x = 6, b_tr_y = 6;", explanation: "Top-right (6,6)." },
-        { stepNumber: 10, program: "    // ----- A calculations -----", explanation: "Area A." },
-        { stepNumber: 11, program: "    int a_width = a_tr_x - a_bl_x;", explanation: "Width A = 4." },
-        { stepNumber: 12, program: "    int a_height = a_tr_y - a_bl_y;", explanation: "Height A = 4." },
-        { stepNumber: 13, program: "    int a_area = a_width * a_height;", explanation: "Area A = 16." },
-        { stepNumber: 14, program: "    cout << \"Rectangle A Area: \" << a_area << endl;", explanation: "Print A area." },
-        { stepNumber: 15, program: "    // ----- B calculations -----", explanation: "Area B." },
-        { stepNumber: 16, program: "    int b_width = b_tr_x - b_bl_x;", explanation: "Width B = 4." },
-        { stepNumber: 17, program: "    int b_height = b_tr_y - b_bl_y;", explanation: "Height B = 4." },
-        { stepNumber: 18, program: "    int b_area = b_width * b_height;", explanation: "Area B = 16." },
-        { stepNumber: 19, program: "    cout << \"Rectangle B Area: \" << b_area << endl;", explanation: "Print B area." },
-        { stepNumber: 20, program: "    // ----- Check intersection -----", explanation: "Intersection test." },
-        { stepNumber: 21, program: "    if (a_tr_x <= b_bl_x || b_tr_x <= a_bl_x || a_tr_y <= b_bl_y || b_tr_y <= a_bl_y) {", explanation: "Check separation." },
-        { stepNumber: 22, program: "        cout << \"No Intersection\" << endl;", explanation: "No overlap." },
-        { stepNumber: 23, program: "    else {", explanation: "Overlap case." },
-        { stepNumber: 24, program: "        cout << \"Rectangles Intersect\" << endl;", explanation: "Confirm overlap." },
-        { stepNumber: 25, program: "        int left = max(a_bl_x, b_bl_x);", explanation: "left = 2." },
-        { stepNumber: 26, program: "        int right = min(a_tr_x, b_tr_x);", explanation: "right = 4." },
-        { stepNumber: 27, program: "        int bottom = max(a_bl_y, b_bl_y);", explanation: "bottom = 2." },
-        { stepNumber: 28, program: "        int top = min(a_tr_y, b_tr_y);", explanation: "top = 4." },
-        { stepNumber: 29, program: "        int inter_width = right - left;", explanation: "width = 2." },
-        { stepNumber: 30, program: "        int inter_height = top - bottom;", explanation: "height = 2." },
-        { stepNumber: 31, program: "        int inter_area = inter_width * inter_height;", explanation: "area = 4." },
-        { stepNumber: 32, program: "        cout << \"Intersection Area: \" << inter_area << endl;", explanation: "Print area." },
-        { stepNumber: 33, program: "    }", explanation: "Close else." },
-        { stepNumber: 34, program: "    return 0;", explanation: "Exit." },
-        { stepNumber: 35, program: "}", explanation: "End main." }
+        { stepNumber: 4, program: "    int arr[] = {1, 3, 5, 6, 7};", explanation: "Array of 5 elements." },
+        { stepNumber: 5, program: "    int n = 5;", explanation: "n = 5." },
+        { stepNumber: 6, program: "    for (int mask = 0; mask < (1 << n); mask++) {", explanation: "Mask loop." },
+        { stepNumber: 7, program: "        cout << \"{ \";", explanation: "Print open brace." },
+        { stepNumber: 8, program: "        for (int i = 0; i < n; i++)", explanation: "Inner loop." },
+        { stepNumber: 9, program: "            if (mask & (1 << i))", explanation: "Check bit." },
+        { stepNumber: 10, program: "                cout << arr[i] << \" \";", explanation: "Print element." },
+        { stepNumber: 11, program: "        cout << \"}\" << endl;", explanation: "Close subset." },
+        { stepNumber: 12, program: "    }", explanation: "End mask loop." },
+        { stepNumber: 13, program: "    return 0;", explanation: "Exit." },
+        { stepNumber: 14, program: "}", explanation: "End main." }
+    ];
+    const section3Steps = [
+        { stepNumber: 1, program: "#include <iostream>", explanation: "I/O." },
+        { stepNumber: 2, program: "using namespace std;", explanation: "Std." },
+        { stepNumber: 3, program: "void printBinary(int num) {", explanation: "Print binary." },
+        { stepNumber: 4, program: "    cout << \"Binary: \";", explanation: "Label." },
+        { stepNumber: 5, program: "    if (num == 0) { cout << \"0\"; return; }", explanation: "Zero case." },
+        { stepNumber: 6, program: "    int binary[32], i=0;", explanation: "Array." },
+        { stepNumber: 7, program: "    while(num>0){ binary[i++]=num%2; num/=2; }", explanation: "Extract bits." },
+        { stepNumber: 8, program: "    for(int j=i-1;j>=0;j--) cout<<binary[j];", explanation: "Print reverse." },
+        { stepNumber: 9, program: "}", explanation: "End." },
+        { stepNumber: 10, program: "void generateSubsets(int n) {", explanation: "Subsets." },
+        { stepNumber: 11, program: "    cout << \"\\nSubsets:\\n\";", explanation: "Header." },
+        { stepNumber: 12, program: "    for(int mask=0; mask<(1<<n); mask++) {", explanation: "Mask loop." },
+        { stepNumber: 13, program: "        cout << \"{ \";", explanation: "Open." },
+        { stepNumber: 14, program: "        for(int i=0;i<n;i++) if(mask&(1<<i)) cout<<i<<\" \";", explanation: "Print indices." },
+        { stepNumber: 15, program: "        cout << \"}\" << endl;", explanation: "Close." },
+        { stepNumber: 16, program: "    }", explanation: "End." },
+        { stepNumber: 17, program: "}", explanation: "End." },
+        { stepNumber: 18, program: "int main() {", explanation: "Main." },
+        { stepNumber: 19, program: "    int num; cin>>num;", explanation: "Input." },
+        { stepNumber: 20, program: "    printBinary(num); generateSubsets(num); return 0;", explanation: "Call." },
+        { stepNumber: 21, program: "}", explanation: "End." }
+    ];
+    const rectangleSteps = [
+        { stepNumber: 1, program: "#include <iostream>", explanation: "I/O." },
+        { stepNumber: 2, program: "using namespace std;", explanation: "Std." },
+        { stepNumber: 3, program: "int main() {", explanation: "Main." },
+        { stepNumber: 4, program: "    int a_bl_x=0,a_bl_y=0, a_tr_x=4,a_tr_y=4;", explanation: "Rect A." },
+        { stepNumber: 5, program: "    int b_bl_x=2,b_bl_y=2, b_tr_x=6,b_tr_y=6;", explanation: "Rect B." },
+        { stepNumber: 6, program: "    int a_width=a_tr_x-a_bl_x, a_height=a_tr_y-a_bl_y;", explanation: "Width/height A." },
+        { stepNumber: 7, program: "    int a_area=a_width*a_height;", explanation: "Area A." },
+        { stepNumber: 8, program: "    cout<<\"Rectangle A Area: \"<<a_area<<endl;", explanation: "Print A." },
+        { stepNumber: 9, program: "    int b_width=b_tr_x-b_bl_x, b_height=b_tr_y-b_bl_y;", explanation: "Width/height B." },
+        { stepNumber: 10, program: "    int b_area=b_width*b_height;", explanation: "Area B." },
+        { stepNumber: 11, program: "    cout<<\"Rectangle B Area: \"<<b_area<<endl;", explanation: "Print B." },
+        { stepNumber: 12, program: "    if(a_tr_x<=b_bl_x||b_tr_x<=a_bl_x||a_tr_y<=b_bl_y||b_tr_y<=a_bl_y)", explanation: "Separation test." },
+        { stepNumber: 13, program: "        cout<<\"No Intersection\"<<endl;", explanation: "No overlap." },
+        { stepNumber: 14, program: "    else {", explanation: "Overlap." },
+        { stepNumber: 15, program: "        int left=max(a_bl_x,b_bl_x), right=min(a_tr_x,b_tr_x);", explanation: "Left/right." },
+        { stepNumber: 16, program: "        int bottom=max(a_bl_y,b_bl_y), top=min(a_tr_y,b_tr_y);", explanation: "Bottom/top." },
+        { stepNumber: 17, program: "        int inter_width=right-left, inter_height=top-bottom;", explanation: "Intersection dims." },
+        { stepNumber: 18, program: "        int inter_area=inter_width*inter_height;", explanation: "Intersection area." },
+        { stepNumber: 19, program: "        cout<<\"Intersection Area: \"<<inter_area<<endl;", explanation: "Print area." },
+        { stepNumber: 20, program: "    }", explanation: "End else." },
+        { stepNumber: 21, program: "    return 0;", explanation: "Exit." },
+        { stepNumber: 22, program: "}", explanation: "End." }
     ];
 
-    // ======================= SECTION 5: BACKTRACKING (Subsets) =======================
+    // ======================= SECTION 5: BACKTRACKING (PASSWORD EXAMPLE) =======================
+    // Program lines (exactly as provided)
     const backtrackSteps = [
-        { stepNumber: 1, program: "#include <iostream>", explanation: "Includes input-output library. Allows <code>cout</code> for printing subsets." },
-        { stepNumber: 2, program: "#include <vector>", explanation: "Includes vector container. Used to store the current subset dynamically." },
-        { stepNumber: 3, program: "using namespace std;", explanation: "Allows using <code>cout</code> and <code>vector</code> without <code>std::</code> prefix." },
-        { stepNumber: 4, program: "int a[] = {1, 2, 3};", explanation: "Global array of elements from which subsets are generated. Here we have three numbers: 1, 2, 3." },
-        { stepNumber: 5, program: "vector<int> v;", explanation: "Global vector that holds the current subset being built (the 'path')." },
-        { stepNumber: 6, program: "void backtrack(int i, int n) {", explanation: "Recursive backtracking function.<br><code>i</code> = current index (0 to n-1)<br><code>n</code> = total number of elements (3)." },
-        { stepNumber: 7, program: "    if (i == n) {", explanation: "Base case: we have processed all indices. <code>i == n</code> means no more elements to decide." },
-        { stepNumber: 8, program: "        cout << \"{ \";", explanation: "Start printing the subset with an opening brace." },
-        { stepNumber: 9, program: "        for (int x : v) cout << x << \" \";", explanation: "Loop through the current subset (vector v) and print each element followed by a space." },
-        { stepNumber: 10, program: "        cout << \"}\\n\";", explanation: "Close the subset with <code>}</code> and newline." },
-        { stepNumber: 11, program: "        return;", explanation: "Exit the recursive call. No further decisions at this leaf." },
-        { stepNumber: 12, program: "    }", explanation: "Closes the base case if-block." },
-        { stepNumber: 13, program: "    // take a[i]", explanation: "Comment: decision to INCLUDE the current element <code>a[i]</code> in the subset." },
-        { stepNumber: 14, program: "    v.push_back(a[i]);", explanation: "Add <code>a[i]</code> to the current subset (vector v)." },
-        { stepNumber: 15, program: "    backtrack(i + 1, n);", explanation: "Recursively explore further elements with the new subset (including a[i])." },
-        { stepNumber: 16, program: "    // undo (backtrack)", explanation: "Comment: this is the crucial backtracking step — undo the last choice." },
-        { stepNumber: 17, program: "    v.pop_back();", explanation: "Remove the last added element (undo the 'take' decision). This restores the state before including a[i]." },
-        { stepNumber: 18, program: "    // do not take a[i]", explanation: "Comment: now explore the alternative path: EXCLUDE the current element." },
-        { stepNumber: 19, program: "    backtrack(i + 1, n);", explanation: "Recursively explore further elements WITHOUT including a[i] (the subset remains unchanged)." },
-        { stepNumber: 20, program: "}", explanation: "Closes the backtrack function." },
-        { stepNumber: 21, program: "int main() {", explanation: "Main function: program entry point." },
-        { stepNumber: 22, program: "    backtrack(0, 3);", explanation: "Start backtracking from index 0 with total elements = 3. This generates all subsets of {1,2,3}." },
-        { stepNumber: 23, program: "}", explanation: "End of main." }
+        { stepNumber: 1, program: "#include <iostream>", explanation: "<code>#include</code> is a preprocessor directive. It tells the compiler to include a file before compilation. <code>&lt;iostream&gt;</code> is the standard input-output library. It contains definitions for <code>cout</code>, <code>cin</code>, and <code>endl</code>. Without this line, the compiler will not recognize <code>cout</code>." },
+        { stepNumber: 2, program: "using namespace std;", explanation: "<code>using</code> is a keyword. <code>namespace</code> is a grouping mechanism in C++. <code>std</code> is the standard namespace where all standard functions exist. This line allows writing <code>cout</code> instead of <code>std::cout</code>." },
+        { stepNumber: 3, program: "int pass[3];", explanation: "<code>int</code> is a data type that stores integers.<br><code>pass</code> is the name of the array.<br><code>[3]</code> means the array has 3 elements.<br>So memory is created like: <code>pass[0] pass[1] pass[2]</code>. Each will store one digit of the password." },
+        { stepNumber: 4, program: "bool found = false;", explanation: "<code>bool</code> is a data type that stores either <code>true</code> or <code>false</code>.<br><code>found</code> is a variable name.<br><code>=</code> is assignment operator.<br><code>false</code> means password not found yet.<br>This variable is used to stop the program once the password is found." },
+        { stepNumber: 5, program: "void generate(int i)", explanation: "<code>void</code> means the function does not return any value.<br><code>generate</code> is the function name.<br><code>int i</code> is a parameter.<br><code>i</code> represents the current position in the password:<br>i = 0 → first digit<br>i = 1 → second digit<br>i = 2 → third digit" },
+        { stepNumber: 6, program: "    if (i == 3)", explanation: "<code>if</code> is a decision statement.<br><code>==</code> is comparison operator (checks equality).<br><code>3</code> is the size of password.<br>👉 If all 3 positions are filled, stop recursion and check password." },
+        { stepNumber: 7, program: "        if (pass[0] == 1 && pass[1] == 2 && pass[2] == 3)", explanation: "Break it:<br><code>pass[0] == 1</code> → first digit must be 1<br><code>pass[1] == 2</code> → second digit must be 2<br><code>pass[2] == 3</code> → third digit must be 3<br><code>&&</code> means logical AND → all conditions must be true.<br>👉 Is password exactly 123?" },
+        { stepNumber: 8, program: "            cout << \"Password Found: \";", explanation: "<code>cout</code> prints output.<br><code>&lt;&lt;</code> is insertion operator (sends data to output).<br><code>\"Password Found: \"</code> is a string literal (text inside quotes)." },
+        { stepNumber: 9, program: "            for (int j = 0; j < 3; j++) cout << pass[j];", explanation: "Break it:<br><code>for</code> → loop<br><code>int j = 0</code> → start index at 0<br><code>j < 3</code> → loop runs 3 times<br><code>j++</code> → increment j by 1<br>Inside loop: <code>cout &lt;&lt; pass[j];</code> prints <code>pass[0] pass[1] pass[2]</code> (e.g., <code>123</code>)." },
+        { stepNumber: 10, program: "            cout << endl;", explanation: "<code>endl</code> moves output to next line." },
+        { stepNumber: 11, program: "            found = true;", explanation: "Assigns <code>true</code> to variable <code>found</code>.<br>Meaning: password has been found." },
+        { stepNumber: 12, program: "        return;", explanation: "Stops current function and goes back to previous call." },
+        { stepNumber: 13, program: "    for (int d = 1; d <= 3; d++)", explanation: "Loop for trying digits:<br><code>d</code> is a variable representing digit<br><code>d = 1</code> → start from 1<br><code>d &lt;= 3</code> → go till 3<br><code>d++</code> → increment by 1<br>So values of d: 1 → 2 → 3" },
+        { stepNumber: 14, program: "        if (found) return;", explanation: "If password is already found, stop further execution (pruning)." },
+        { stepNumber: 15, program: "        pass[i] = d;", explanation: "Assign digit <code>d</code> to position <code>i</code>.<br>Example: i = 0, d = 1 → <code>pass[0] = 1</code>" },
+        { stepNumber: 16, program: "        generate(i + 1);", explanation: "Recursive call to move to next position.<br><code>i + 1</code> means next index.<br>Example: i = 0 → call <code>generate(1)</code>" },
+        { stepNumber: 17, program: "int main() {", explanation: "Program starts execution from here." },
+        { stepNumber: 18, program: "    generate(0);", explanation: "Start building password from index 0 (first digit)." },
+        { stepNumber: 19, program: "}", explanation: "End of main." }
     ];
 
-    // Map for backtracking explanations
-    const backtrackMap = new Map();
-    backtrackSteps.forEach(step => backtrackMap.set(step.stepNumber, step.explanation));
-
-    // ----- Backtracking theory block (placed on right column before step explanations) -----
+    // Backtracking theory block (new content)
     function getBacktrackTheoryHTML() {
         return `
             <div style="margin-bottom: 0.5rem;">
-                <h3 style="color:#2c3e50;">🔁 What is Backtracking?</h3>
-                <p>Backtracking is a problem-solving technique where we try all possible choices step by step.<br>
-                We build a solution little by little, and when we realize a choice is not useful or we already explored it, we undo it and try another option.</p>
-                <p>👉 <strong>Try → Explore → Undo → Try next option</strong></p>
+                <h3 style="color:#2c3e50;">🔁 What is Backtracking (in C++)?</h3>
+                <p>Backtracking is a method where we try all possible choices step by step.<br>
+                At each step we make a choice, go forward, and when done, we undo that choice and try another one.</p>
+                <p><strong>Simple meaning:</strong> Try → Go forward → Undo → Try next</p>
                 <hr>
-                <h4>🔷 Where is Backtracking Used?</h4>
+                <h4>Why do we use Backtracking?</h4>
+                <p>We use backtracking when:</p>
                 <ul>
-                    <li>You need to try all possible combinations</li>
-                    <li>You are not sure which choice is correct</li>
-                    <li>You want to generate all possibilities</li>
+                    <li>We must try all possible combinations</li>
+                    <li>We don't know the correct answer directly</li>
+                    <li>We need to search for a correct solution</li>
                 </ul>
-                <p><strong>Common uses:</strong> Generating subsets, permutations, solving puzzles (Sudoku, maze), partition problems.</p>
                 <hr>
-                <h4>🔷 How Backtracking Works (Simple Steps)</h4>
-                <ol>
-                    <li>Start with an empty solution</li>
-                    <li>Add one choice</li>
-                    <li>Move forward recursively</li>
-                    <li>If needed, undo last choice</li>
-                    <li>Try next possibility</li>
-                </ol>
+                <h4>🔷 Password Example: Generate all 3-digit passwords using digits {1,2,3}</h4>
+                <p><strong>Real-Life Idea: Password Checking (Target = 123)</strong></p>
+                <p>Imagine: You forgot a 3-digit password. Digits allowed = 1, 2, 3. Correct password = 123.<br>
+                👉 You must try all possibilities until you find it.</p>
+                <p>This is exactly where backtracking is used. We want to generate all possible passwords like:<br>
+                <code>111, 112, 113, 121, 122, 123, ... , 333</code></p>
                 <hr>
-                <h4>🔷 Example: Generating Subsets of {1,2,3}</h4>
-                <p>For each number we have 2 choices: <strong>take it</strong> or <strong>skip it</strong>. Total subsets = 2³ = 8.</p>
-                <p><strong>What the code does:</strong> At each index:<br>
-                → include element → explore further → remove element (undo) → explore without it.</p>
-                <p><strong>Output order:</strong><br>
-                { 1 2 3 }<br>
-                { 1 2 }<br>
-                { 1 3 }<br>
-                { 1 }<br>
-                { 2 3 }<br>
-                { 2 }<br>
-                { 3 }<br>
-                { }<br>
-                </p>
-                <hr>
+                <p><strong>🔥 Final Understanding</strong><br>
+                Backtracking here means: Try all combinations: 111, 112, 113, ..., 123, ..., 333. Stop when 123 is found.</p>
                 <p style="background:#e9ecef; padding:0.5rem; border-radius:12px; text-align:center;">⬇️ <strong>Click any line of the backtracking program to see detailed explanation ⬇️</strong></p>
             </div>
         `;
     }
 
-    // Helper: build step list (generic)
+    // Helper functions
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
+    }
+
     function buildStepList(container, stepsArray, onClickCallback) {
         container.innerHTML = '';
         const stepsWrapper = document.createElement('div');
@@ -489,21 +430,13 @@
         container.appendChild(note);
     }
 
-    function escapeHtml(str) {
-        return str.replace(/[&<>]/g, function(m) {
-            if(m === '&') return '&amp;';
-            if(m === '<') return '&lt;';
-            if(m === '>') return '&gt;';
-            return m;
-        });
-    }
-
-    // Show backtracking explanation for a specific step (line)
+    // Backtracking show explanation
+    const backtrackMap = new Map();
+    backtrackSteps.forEach(step => backtrackMap.set(step.stepNumber, step.explanation));
     function showBacktrackExplanation(stepNumber) {
         const explanation = backtrackMap.get(stepNumber);
         const programLine = backtrackSteps.find(s => s.stepNumber === stepNumber)?.program || '';
         const rightContainer = document.getElementById('rightContent');
-        // Right column contains theory + step card
         rightContainer.innerHTML = `
             <div class="exp-card theory-card">
                 <div class="exp-step-badge" style="background:#6c3483;">📐 Backtracking Primer</div>
@@ -521,12 +454,15 @@
         `;
         document.getElementById('rightTitle').innerHTML = `📖 Backtracking (Step ${stepNumber})`;
     }
+    function setBacktrackDefault() { showBacktrackExplanation(1); }
 
-    function setBacktrackDefault() {
-        showBacktrackExplanation(1);
-    }
-
-    // ----- Section renderer -----
+    // Standard handlers for other sections (simplified to avoid clutter)
+    const section2Map = new Map(); section2Steps.forEach(s => section2Map.set(s.stepNumber, s.explanation));
+    const section3Map = new Map(); section3Steps.forEach(s => section3Map.set(s.stepNumber, s.explanation));
+    const rectMap = new Map(); rectangleSteps.forEach(s => rectMap.set(s.stepNumber, s.explanation));
+    function showSection2Explanation(stepNumber) { buildStandardRight(section2Map, section2Steps, stepNumber, "Bitmasking Subsets"); }
+    function showSection3Explanation(stepNumber) { buildStandardRight(section3Map, section3Steps, stepNumber, "Binary + Subsets"); }
+    function showRectangleExplanation(stepNumber) { buildStandardRight(rectMap, rectangleSteps, stepNumber, "Rectangle Geometry"); }
     function buildStandardRight(expMap, stepsArr, stepNumber, titlePrefix) {
         const explanation = expMap.get(stepNumber);
         const programLine = stepsArr.find(s => s.stepNumber === stepNumber)?.program || '';
@@ -541,19 +477,11 @@
         `;
         document.getElementById('rightTitle').innerHTML = `${titlePrefix} (Step ${stepNumber})`;
     }
-
-    // Section 1,2,3,4 handlers (kept simple)
-    const section2Map = new Map(); section2Steps.forEach(s => section2Map.set(s.stepNumber, s.explanation));
-    function showSection2Explanation(stepNumber) { buildStandardRight(section2Map, section2Steps, stepNumber, "Step-by-Step Explanation"); }
-    const section3Map = new Map(); section3Steps.forEach(s => section3Map.set(s.stepNumber, s.explanation));
-    function showSection3Explanation(stepNumber) { buildStandardRight(section3Map, section3Steps, stepNumber, "Step-by-Step Explanation"); }
-    const rectMap = new Map(); rectangleSteps.forEach(s => rectMap.set(s.stepNumber, s.explanation));
-    function showRectangleExplanation(stepNumber) { buildStandardRight(rectMap, rectangleSteps, stepNumber, "Rectangle Geometry"); }
     function setSection2Default() { showSection2Explanation(1); }
     function setSection3Default() { showSection3Explanation(1); }
     function setRectangleDefault() { showRectangleExplanation(1); }
 
-    // Section1 theory
+    // Section 1 (Subsets theory)
     function buildSection1Left(container) {
         container.innerHTML = `<div style="background:#fdf8e7; padding:1.2rem; border-radius:1.2rem;"><h3>✅ Subset & Bitmask</h3><p>...</p><pre>Bitmask 10101 → {1,5,7}</pre></div>`;
     }
@@ -565,6 +493,7 @@
         }, 10);
     }
 
+    // Main render function
     function renderSection(sectionId) {
         const leftContainer = document.getElementById('leftContent');
         if (sectionId === 'section1') {
@@ -588,14 +517,14 @@
             if (!window._sec4Init) { setRectangleDefault(); window._sec4Init = true; }
             else { const active = document.querySelector('#leftContent .step-item.active-step'); if(active) showRectangleExplanation(parseInt(active.dataset.stepId)); else setRectangleDefault(); }
         } else if (sectionId === 'section5') {
-            document.getElementById('leftTitle').innerText = "🔁 Backtracking Subsets Generator";
+            document.getElementById('leftTitle').innerText = "🔁 Backtracking: 3-digit Password (digits 1-3)";
             buildStepList(leftContainer, backtrackSteps, showBacktrackExplanation);
             if (!window._sec5Init) { setBacktrackDefault(); window._sec5Init = true; }
             else { const active = document.querySelector('#leftContent .step-item.active-step'); if(active) showBacktrackExplanation(parseInt(active.dataset.stepId)); else setBacktrackDefault(); }
         }
     }
 
-    // Attach event listeners to topic buttons
+    // Attach button events
     document.querySelectorAll('.topic-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('active'));
@@ -604,7 +533,7 @@
         });
     });
 
-    // Default load: section2 as before
+    // Default load (section2 as before)
     renderSection('section2');
     document.querySelector('.topic-btn[data-section="section2"]').classList.add('active');
 </script>
